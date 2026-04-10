@@ -1,0 +1,14 @@
+node_modules/
+*.log
+.DS_Store
+.env
+.env.local
+dist/
+build/
+.vscode/
+.idea/
+.wwebjs_auth/
+.npm/
+coverage/
+.env*
+*.lock

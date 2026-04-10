@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+/* Outer and inner rotation animations */
+.outer-circle {
+  position: relative;
+  animation: spin-slow 30s linear infinite;
+}
+
+.inner-circle {
+  position: relative;
+  animation: spin-reverse 20s linear infinite;
+}
+
+/* Pause rotation on hover */
+.outer-circle:hover,
+.inner-circle:hover {
+  animation-play-state: paused;
+}
+
+/* Smooth floating icons */
+.skill-item img {
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+.skill-item:hover img {
+  transform: scale(1.15);
+  filter: brightness(1.1);
+}
+
+/* Keyframes for rotation */
+@keyframes spin-slow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* Responsive scaling */
+@media (max-width: 768px) {
+  .outer-circle {
+    width: 300px !important;
+    height: 300px !important;
+  }
+  .inner-circle {
+    width: 200px !important;
+    height: 200px !important;
+  }
+}
+@media (max-width: 420px) {
+  .outer-circle {
+    width: 240px !important;
+    height: 240px !important;
+  }
+  .inner-circle {
+    width: 160px !important;
+    height: 160px !important;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out forwards;
+}
