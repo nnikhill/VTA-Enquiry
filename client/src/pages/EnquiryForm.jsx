@@ -39,8 +39,9 @@ export default function EnquiryForm() {
     try {
       setLoading(true);
 
+      const apiUrl = import.meta.env.VITE_API_URL;
       const res = await axios.post(
-        "http://localhost:5000/api/enquiries",
+        `${apiUrl}/api/enquiries`,
         formData
       );
 

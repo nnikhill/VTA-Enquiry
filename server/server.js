@@ -8,7 +8,19 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://vta-enquiry.vercel.app",
+    "https://vta-enquiry-server.vercel.app"
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type"]
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use("/api/enquiries", enquiryRoutes);
