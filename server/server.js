@@ -8,17 +8,13 @@ dotenv.config();
 
 const app = express();
 
-// CORS Configuration - यह सभी origins को allow करेगा development के लिए
+// CORS Configuration - Environment variables से origins read करेंगे
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:5173,http://localhost:3000").split(',');
+
 const corsOptions = {
   origin: function (origin, callback) {
-    const allowedOrigins = [
-      "http://localhost:5173",
-      "http://localhost:3000",
-      "https://vta-enquiry.vercel.app"
-    ];
-    
     // अगर origin allowed है या origin undefined है (same origin requests)
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin.trim())) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
