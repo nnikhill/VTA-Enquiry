@@ -41,7 +41,7 @@ export default function AdminDashboard() {
   const incomplete = enquiries.filter((e) => e.status === "Incomplete").length;
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-purple-600 to-purple-800 p-4 overflow-hidden">
+    <div className="relative min-h-screen bg-linear-to-br from-purple-600 to-purple-800 p-4 overflow-hidden">
 
       {/* 🔮 Background Vectors */}
       <div className="absolute top-0 left-0 w-72 h-72 bg-purple-400 opacity-30 rounded-full blur-3xl"></div>
