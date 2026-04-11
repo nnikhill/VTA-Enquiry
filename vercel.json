@@ -3,11 +3,6 @@
   "installCommand": "npm install && cd client && npm install",
   "buildCommand": "cd client && npm run build",
   "outputDirectory": "client/dist",
-  "env": {
-    "MONGO_URI": "@mongo_uri",
-    "ALLOWED_ORIGINS": "@allowed_origins",
-    "NODE_ENV": "production"
-  },
   "routes": [
     {
       "src": "/api/(.*)",
