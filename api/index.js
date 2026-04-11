@@ -29,9 +29,9 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 app.use(express.json());
 
-app.use("/api/enquiries", enquiryRoutes);
+app.use("/enquiries", enquiryRoutes);
 
-app.get("/api", (req, res) => {
+app.get("/", (req, res) => {
   res.send("VTA Enquiry Backend API Running");
 });
 

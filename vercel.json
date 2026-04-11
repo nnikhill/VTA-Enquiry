@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "installCommand": "npm install",
-  "buildCommand": "cd client && npm install && npm run build",
+  "installCommand": "npm install && cd client && npm install",
+  "buildCommand": "cd client && npm run build",
   "outputDirectory": "client/dist",
   "env": {
     "MONGO_URI": "@mongo_uri",
@@ -9,6 +9,10 @@
     "NODE_ENV": "production"
   },
   "routes": [
+    {
+      "src": "/assets/(.*)",
+      "dest": "/client/dist/assets/$1"
+    },
     {
       "src": "/api/(.*)",
       "dest": "/api/index.js"

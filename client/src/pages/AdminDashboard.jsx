@@ -13,7 +13,7 @@ export default function AdminDashboard() {
 
   const fetchEnquiries = async () => {
     try {
-      const res = await axios.get(`${apiUrl}/api/enquiries`);
+      const res = await axios.get(`${apiUrl}/enquiries`);
       setEnquiries(res.data.enquiries);
     } catch (error) {
       console.log(error);
@@ -22,7 +22,7 @@ export default function AdminDashboard() {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.put(`${apiUrl}/api/enquiries/${id}/status`, {
+      await axios.put(`${apiUrl}/enquiries/${id}/status`, {
         status,
       });
       fetchEnquiries();
