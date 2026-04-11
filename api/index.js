@@ -54,4 +54,5 @@ mongoose
     console.error("❌ MongoDB Connection Error:", error.message);
   });
 
+// Export for Vercel serverless function
 export default app;
