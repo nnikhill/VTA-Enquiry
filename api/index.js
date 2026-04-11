@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 
 // CORS Configuration
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:5173,http://localhost:3000").split(',');
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:5173").split(',');
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -22,20 +22,37 @@ const corsOptions = {
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  maxAge: 3600
 };
 
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 app.use(express.json());
 
-app.use("/enquiries", enquiryRoutes);
+// Connect to MongoDB
+if (!mongoose.connection.readyState) {
+  mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(() => {
+    console.log("✅ MongoDB Connected");
+  }).catch((err) => {
+    console.error("❌ MongoDB Connection Error:", err.message);
+  });
+}
 
+// Routes
+app.use("/api/enquiries", enquiryRoutes);
+
+// Health checks
 app.get("/", (req, res) => {
-  res.send("VTA Enquiry Backend API Running");
+  res.json({ message: "✅ API Running", status: "ok" });
 });
 
-// Error handling middleware
+app.get("/api", (req, res) => {
+  res.json({ message: "✅ VTA Enquiry API Ready", status: "ok" });
+});
+
+// Error handler
 app.use((err, req, res, next) => {
   console.error("Error:", err);
   res.status(err.status || 500).json({
@@ -44,15 +61,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-// MongoDB Connection
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("✅ MongoDB Connected Successfully");
-  })
-  .catch((error) => {
-    console.error("❌ MongoDB Connection Error:", error.message);
-  });
-
-// Export for Vercel serverless function
 export default app;

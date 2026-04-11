@@ -27,13 +27,19 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Preflight requests के लिए - यह जरूरी है!
+app.options('*', cors(corsOptions));
 app.use(express.json());
 
+// API Routes
 app.use("/api/enquiries", enquiryRoutes);
 
+// Health check
 app.get("/", (req, res) => {
-  res.send("VTA Enquiry Backend Running");
+  res.json({ message: "✅ VTA Enquiry Backend Running", status: "ok" });
+});
+
+app.get("/api", (req, res) => {
+  res.json({ message: "✅ VTA Enquiry API Running", status: "ok" });
 });
 
 // Error handling middleware
