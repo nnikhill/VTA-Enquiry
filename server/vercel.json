@@ -14,6 +14,8 @@
   ],
   "env": {
     "MONGO_URI": "@mongo_uri",
-    "PORT": "5000"
+    "PORT": "5000",
+    "ALLOWED_ORIGINS": "@allowed_origins",
+    "NODE_ENV": "production"
   }
 }
