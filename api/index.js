@@ -41,7 +41,7 @@ if (!mongoose.connection.readyState) {
 }
 
 // Routes
-app.use("/api/enquiries", enquiryRoutes);
+app.use("/enquiries", enquiryRoutes);
 
 // Health checks
 app.get("/", (req, res) => {
