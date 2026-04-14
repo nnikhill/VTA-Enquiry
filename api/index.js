@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 
 // CORS Configuration
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:5173").split(',');
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:5173,https://vta-enquiry.vercel.app").split(',');
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -28,11 +28,12 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 app.use(express.json());
 
-// Connect to MongoDB
-if (!mongoose.connection.readyState) {
+// Connect to MongoDB only if not already connected
+if (mongoose.connection.readyState === 0 && process.env.MONGO_URI) {
   mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 10000,
   }).then(() => {
     console.log("✅ MongoDB Connected");
   }).catch((err) => {
@@ -40,7 +41,8 @@ if (!mongoose.connection.readyState) {
   });
 }
 
-// Routes
+// Routes - both /api/enquiries and /enquiries for compatibility
+app.use("/api/enquiries", enquiryRoutes);
 app.use("/enquiries", enquiryRoutes);
 
 // Health checks

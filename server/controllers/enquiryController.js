@@ -35,19 +35,17 @@ export const createEnquiry = async (req, res) => {
       notes,
     });
 
-    // Send WhatsApp automatically
-    const whatsappResult = await sendWhatsappMessage({
+    // Send WhatsApp message asynchronously (fire and forget)
+    sendWhatsappMessage({
       fullName,
       mobile,
       enquiryId,
       course,
-    });
-
-    if (whatsappResult) {
+    }).then((result) => {
       console.log(`✅ WhatsApp sent successfully to ${mobile}`);
-    } else {
-      console.log(`❌ WhatsApp failed for ${mobile}`);
-    }
+    }).catch((error) => {
+      console.error(`❌ WhatsApp failed for ${mobile}:`, error.message);
+    });
 
     res.status(201).json({
       success: true,
@@ -55,9 +53,10 @@ export const createEnquiry = async (req, res) => {
       enquiry,
     });
   } catch (error) {
+    console.error("❌ Error creating enquiry:", error);
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message || "Failed to submit enquiry",
     });
   }
 };
