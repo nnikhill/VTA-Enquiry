@@ -28,18 +28,43 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 app.use(express.json());
 
-// Connect to MongoDB only if not already connected
-if (mongoose.connection.readyState === 0 && process.env.MONGO_URI) {
-  mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 10000,
-  }).then(() => {
+// MongoDB Connection Management for Serverless
+let mongoConnected = false;
+
+const connectDB = async () => {
+  if (mongoConnected || mongoose.connection.readyState === 1) {
+    return;
+  }
+
+  if (!process.env.MONGO_URI) {
+    console.error("❌ MONGO_URI not defined");
+    return;
+  }
+
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+    mongoConnected = true;
     console.log("✅ MongoDB Connected");
-  }).catch((err) => {
+  } catch (err) {
     console.error("❌ MongoDB Connection Error:", err.message);
-  });
-}
+  }
+};
+
+// Middleware to connect to DB on first request
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error("❌ Error in DB connection middleware:", error);
+    next();
+  }
+});
 
 // Routes - both /api/enquiries and /enquiries for compatibility
 app.use("/api/enquiries", enquiryRoutes);
@@ -47,20 +72,29 @@ app.use("/enquiries", enquiryRoutes);
 
 // Health checks
 app.get("/", (req, res) => {
-  res.json({ message: "✅ API Running", status: "ok" });
+  res.json({ message: "✅ API Running", status: "ok", mongoConnected });
 });
 
 app.get("/api", (req, res) => {
-  res.json({ message: "✅ VTA Enquiry API Ready", status: "ok" });
+  res.json({ message: "✅ VTA Enquiry API Ready", status: "ok", mongoConnected });
 });
 
-// Error handler
-app.use((err, req, res, next) => {
-  console.error("Error:", err);
-  res.status(err.status || 500).json({
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
     success: false,
-    message: err.message || "Internal Server Error"
+    message: "Route not found",
   });
 });
 
+// Error handler (must be last)
+app.use((err, req, res, next) => {
+  console.error("❌ Route Error:", err);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
+
+// Export handler for Vercel serverless
 export default app;

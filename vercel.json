@@ -1,17 +1,28 @@
 {
   "version": 2,
-  "installCommand": "npm install && cd client && npm install",
+  "installCommand": "npm install && cd client && npm install && cd ../server && npm install",
   "buildCommand": "cd client && npm run build",
   "outputDirectory": "client/dist",
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "/api/.*",
       "dest": "/api/index.js"
     },
     {
-      "src": "/(.*)",
-      "dest": "/client/dist/index.html"
+      "src": "/.*",
+      "dest": "/client/dist/index.html",
+      "status": 200
     }
-  ]
+  ],
+  "env": {
+    "MONGO_URI": "@mongo_uri",
+    "ALLOWED_ORIGINS": "@allowed_origins"
+  },
+  "functions": {
+    "api/index.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  }
 }
 

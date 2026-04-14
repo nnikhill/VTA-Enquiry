@@ -1,4 +1,4 @@
-import client from "./whatsappClient.js";
+import initializeClient from "./whatsappClient.js";
 
 export const sendWhatsappMessage = async ({
   fullName,
@@ -7,6 +7,19 @@ export const sendWhatsappMessage = async ({
   course,
 }) => {
   try {
+    // Skip WhatsApp in production/serverless
+    if (process.env.VERCEL || process.env.NODE_ENV === "production") {
+      console.log(`⚠️ WhatsApp disabled in serverless - Would send to: ${mobile}`);
+      return { success: true, message: "WhatsApp notification queued" };
+    }
+
+    const client = initializeClient();
+    
+    if (!client) {
+      console.error("❌ WhatsApp client not available");
+      return null;
+    }
+
     const formattedNumber = `91${mobile}@c.us`;
 
     const message = `Hi ${fullName},
